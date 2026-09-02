@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Organizador de Tabela de Projeto</title>
+
+    <!-- Runtime do stlite: Streamlit compilado para WebAssembly.
+         Tudo roda no navegador de quem abre a página. -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@stlite/browser@0.85.1/build/stlite.css"
+    />
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@stlite/browser@0.85.1/build/stlite.js"
+    ></script>
+
+    <style>
+      /* O stlite deixa o texto do entrypoint visível na página.
+         Esconder o elemento e revelar só o container do app, que o
+         próprio stlite cria, tira esse texto solto da tela. */
+      streamlit-app {
+        visibility: hidden;
+      }
+
+      streamlit-app .stlite-app-container {
+        visibility: visible;
+      }
+    </style>
+  </head>
+
+  <body>
+    <streamlit-app>
+      <!-- app.py é buscado ao lado deste HTML e gravado no sistema de
+           arquivos virtual do navegador. -->
+      <app-file name="app.py" url="./app.py"></app-file>
+
+      <!-- streamlit já vem no runtime; openpyxl é o que lê .xlsx. -->
+      <app-requirements>
+        pandas
+        openpyxl
+      </app-requirements>
+
+      <!-- Entrypoint. Nesta versão do stlite ele precisa ser inline, então
+           fica só esta linha, que executa o app.py de verdade. O exec roda
+           de novo a cada interação, como o Streamlit espera (um "import"
+           ficaria em cache e a página congelaria no primeiro clique). -->
+      exec(compile(open("app.py", encoding="utf-8").read(), "app.py", "exec"))
+    </streamlit-app>
+  </body>
+</html>

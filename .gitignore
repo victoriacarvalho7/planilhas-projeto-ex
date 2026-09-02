@@ -1,0 +1,7 @@
+# Dados do projeto: ficam só na máquina, nunca vão para o repositório.
+dados.csv
+*.xlsx
+*.xls
+
+__pycache__/
+.venv/
