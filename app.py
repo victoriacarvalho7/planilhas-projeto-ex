@@ -5,6 +5,60 @@ import pandas as pd
 import streamlit as st
 
 
+def desmesclar():
+    """Gera ``data/resultado.xlsx`` a partir do modelo presente em ``data``.
+
+    A rotina não depende das demais funções ou constantes da aplicação.
+    """
+    from pathlib import Path
+
+    from openpyxl import load_workbook
+
+    pasta_data = Path(__file__).resolve().parent / "data"
+    arquivo_modelo = next(
+        (
+            arquivo
+            for arquivo in pasta_data.glob("*.xlsx")
+            if arquivo.name != "resultado.xlsx" and not arquivo.name.startswith("~$")
+        ),
+        None,
+    )
+
+    if arquivo_modelo is None:
+        raise FileNotFoundError("Nenhum arquivo .xlsx de modelo foi encontrado em data.")
+
+    planilha = load_workbook(arquivo_modelo)
+    primeira_aba = planilha.worksheets[0]
+
+    # O openpyxl desmescla intervalos inteiros; por isso, desmesclamos todos
+    # os intervalos que ocupam alguma célula das colunas A ou B. Antes de
+    # desmesclar, guardamos o valor da célula principal para repeti-lo em
+    # todas as células que pertenciam ao intervalo.
+    for intervalo in list(primeira_aba.merged_cells.ranges):
+        if intervalo.min_col <= 2:
+            valor = primeira_aba.cell(intervalo.min_row, intervalo.min_col).value
+            primeira_aba.unmerge_cells(str(intervalo))
+
+            for linha in primeira_aba.iter_rows(
+                min_row=intervalo.min_row,
+                max_row=intervalo.max_row,
+                min_col=intervalo.min_col,
+                max_col=intervalo.max_col,
+            ):
+                for celula in linha:
+                    celula.value = valor
+
+    primeira_aba.delete_rows(1, 2)
+
+    arquivo_resultado = pasta_data / "resultado.xlsx"
+    planilha.save(arquivo_resultado)
+
+    return arquivo_resultado
+
+
+desmesclar()
+
+
 # -----------------------------------------
 # CONFIGURAÇÃO DA PÁGINA
 # -----------------------------------------
