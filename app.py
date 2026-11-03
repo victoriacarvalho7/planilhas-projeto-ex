@@ -5,7 +5,7 @@ import pandas as pd
 import streamlit as st
 
 
-def desmesclar():
+def  desmesclar():
     """Gera ``data/resultado.xlsx`` a partir do modelo presente em ``data``.
 
     A rotina não depende das demais funções ou constantes da aplicação.
@@ -56,7 +56,7 @@ def desmesclar():
     return arquivo_resultado
 
 
-desmesclar()
+# desmesclar()
 
 
 # -----------------------------------------
